@@ -120,7 +120,6 @@ def run(filename):
 	coords1 = []
 
         for command in commands:
-	    print command
             c = command['op']
             args = command['args']
 
@@ -146,7 +145,6 @@ def run(filename):
             elif c == 'torus':
                 if command['constants']:
                     reflect = command['constants']
-		print_matrix( stack[-1])
                 add_torus(tmp,
                           args[0], args[1], args[2], args[3], args[4], step_3d)
                 matrix_mult( stack[-1], tmp )
@@ -160,44 +158,29 @@ def run(filename):
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
             elif c == 'move':
-                tmp = make_translate(args[0], args[1], args[2])	        
-		if command['knob']:
-		    knob = frames[current_frame][command['knob']]
-		    for index0 in range(len(tmp)):
-		        for index1 in range(len(tmp[index0])):
-			    tmp[index0][index1] = tmp[index0][index1] * knob        
+		knob = frames[current_frame][command['knob']] if command['knob'] else 1
+                tmp = make_translate(args[0] * knob, args[1] * knob, args[2] * knob)	              
 		matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
-		print_matrix( stack[-1])
             elif c == 'scale':
-                tmp = make_scale(args[0], args[1], args[2])
-		if command['knob']:
-		    knob = frames[current_frame][command['knob']]
-		    for index0 in range(len(tmp)):
-		        for index1 in range(len(tmp[index0])):
-	 	    	    tmp[index0][index1] = tmp[index0][index1] * knob 
+		knob = frames[current_frame][command['knob']] if command['knob'] else 1
+                tmp = make_scale(args[0] * knob, args[1] * knob, args[2] * knob)
 		matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
-		print_matrix( stack[-1])
             elif c == 'rotate':
+		knob = frames[current_frame][command['knob']] if command['knob'] else 1
                 theta = args[1] * (math.pi/180)
                 if args[0] == 'x':
-                    tmp = make_rotX(theta)
+                    tmp = make_rotX(theta * knob)
                 elif args[0] == 'y':
-                    tmp = make_rotY(theta)
+                    tmp = make_rotY(theta * knob)
                 else:
-                    tmp = make_rotZ(theta)
-		if command['knob']:
-		    knob = frames[current_frame][command['knob']]	
-		    for index0 in range(len(tmp)):
-	    	        for index1 in range(len(tmp[index0])):
-			    tmp[index0][index1] = tmp[index0][index1] * knob 
+                    tmp = make_rotZ(theta * knob)
                 matrix_mult( stack[-1], tmp )
                 stack[-1] = [ x[:] for x in tmp]
                 tmp = []
-		print_matrix( stack[-1])
             elif c == 'push':
                 stack.append([x[:] for x in stack[-1]] )
             elif c == 'pop':
@@ -208,6 +191,9 @@ def run(filename):
                 save_extension(screen, args[0])
             
     	current_frame += 1
-	save_extension(screen, 'anim/' + name + "%02d"%current_frame)
+	if num_frames < 100:
+		save_extension(screen, 'anim/' + name + "%02d"%current_frame)
+	else:
+		save_extension(screen, 'anim/' + name + "%03d"%current_frame)
     if num_frames > 1:
 	make_animation( name)
