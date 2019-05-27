@@ -1,0 +1,26 @@
+constants gold 0.247 0.75 0.63 0.2 0.6 0.55 0.07 0.22 0.36
+constants silver 0.2 0.5 0.5 0.2 0.5 0.5 0.2 0.5 0.5
+
+frames 50
+basename spinspin_winwin
+push
+move 250 250 0
+scale 1 1 1.5
+rotate x 90
+rotate y 360 spin
+rotate x 30 shake
+rotate z 30 shake
+torus gold 0 0 0 20 75
+sphere silver 0 0 100 20 
+sphere silver 71 0 71 20
+sphere silver -71 0 71 20
+sphere silver -71 0 -71 20
+sphere silver 71 0 -71 20
+sphere silver -100 0 0 20 
+sphere silver 0 0 -100 20 
+sphere silver 100 0 0 20
+vary spin 0 49 0 1
+vary shake 0 11 0 1
+vary shake 12 24 1 0
+vary shake 25 37 0 -1
+vary shake 38 49 -1 0
